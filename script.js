@@ -83,7 +83,13 @@ class App {
 	#workouts = [];
 
 	constructor(){
+		// get user's position
 		this._getPosition();
+
+		// get data from local storage
+		this._getLocalStorage();
+
+		// Attach Event handler
 		form.addEventListener('submit',this._netWorkout.bind(this));
 		inputType.addEventListener('change',this._toggleElevationField);
 		containerWorkouts.addEventListener('click',this._moveToPopup.bind(this));
@@ -118,6 +124,10 @@ class App {
 
 		// ----- ----- Handling Clicks On Maps ----- -----
 		this.#map.on('click',this._showForm.bind(this));
+
+		this.#workouts.forEach(work => {
+			this._renderWorkoutMarker(work)
+			});
 	}
 
 	_showForm(mapE){
@@ -183,7 +193,7 @@ class App {
 
 		// ----- ----- Add new object to workout Array ----- ----- 
 		this.#workouts.push(workout);
-		console.log(workout);
+		// console.log(workout);
 		
 		// ----- ----- Render Workout on map as marker ----- -----
 		this._renderWorkoutMarker(workout);
@@ -193,6 +203,9 @@ class App {
 
 		// ----- ----- Hide form + clear input fields ----- -----
 		this._hidefrom();
+
+		// ----- ----- Set to local storage ----- -----
+		this._setLocalStorage();
 	}
 
 	_renderWorkoutMarker(workout){
@@ -267,7 +280,7 @@ class App {
 
 		if(!workoutEl) return;
 		const workout = this.#workouts.find(work => work.id === workoutEl.dataset.id);
-		console.log(workout);
+		// console.log(workout);
 
 		this.#map.setView(workout.coords, this.#mapZoomLevel,{
 			animate: true,
@@ -277,7 +290,32 @@ class App {
 		});
 
 		// Using the public interface
-		workout.click();
+		// workout.click();
+	}
+
+	// set Local storage
+	_setLocalStorage(){
+		localStorage.setItem('workouts',JSON.stringify(this.#workouts))
+	}
+
+	// get Local storage
+	_getLocalStorage(){
+		const data = JSON.parse(localStorage.getItem('workouts'));
+		// console.log(data);
+
+		if (!data) return;
+
+		this.#workouts = data;
+
+		this.#workouts.forEach(work => {
+			this._renderWorkout(work)
+			});
+	}
+
+	// reload | remove workout and marker
+	reset(){
+		localStorage.removeItem('workouts');
+		location.reload(); 
 	}
 };
 
