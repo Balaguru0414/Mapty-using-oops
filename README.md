@@ -2,4 +2,4 @@
 
 LIVE PREVIEW :
 
-<a href="https://balaguru0414.github.io/Mapty-using-oops/">MAPTY<>
+<a href="https://balaguru0414.github.io/Mapty-using-oops/">MAPTY</a>
